@@ -11,5 +11,9 @@ https://github.com/balakethelock/SuperWoW
 - Inform about important cooldowns being used by enemy.
 - Inform about instant cast spells and aoe spells (without target) being used by enemy.
 - Inform about other enemy targets casting helpful spells on your target.
+- Inform about item usage.
+- Add spell priority.
+- Add sounds.
+- Add extra fonts.
   
 ![ModernSpellAlert](https://github.com/user-attachments/assets/5b6506f6-1937-404b-9749-1a7fb7e175ce)
