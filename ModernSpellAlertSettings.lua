@@ -6,6 +6,31 @@ ModernSpellAlertSettings:RegisterDefaults("profile", {
     showMinimapIcon = true,
 })
 
+-- Function to get spell settings
+local function getSpellSetting(spellName, settingKey)
+    local spellSettings = ModernSpellAlertSettings.db.profile[spellName]
+    if spellSettings and spellSettings[settingKey] ~= nil then
+        return spellSettings[settingKey]
+    end
+    return false -- Default to false if the setting is not defined
+end
+
+-- Function to set spell settings
+local function setSpellSetting(spellName, settingKey, value)
+    ModernSpellAlertSettings.db.profile[spellName] = ModernSpellAlertSettings.db.profile[spellName] or {}
+    ModernSpellAlertSettings.db.profile[spellName][settingKey] = value and true or nil
+
+    -- Output to chat for debugging
+    DEFAULT_CHAT_FRAME:AddMessage(string.format("Updated: %s - %s = %s", spellName, settingKey, value and "enabled" or "disabled"))
+
+    -- Call PopulateSpellNames to synchronize settings
+    if ModernSpellAlert and ModernSpellAlert.PopulateSpellNames then
+        ModernSpellAlert:PopulateSpellNames()
+    else
+        DEFAULT_CHAT_FRAME:AddMessage("Error: ModernSpellAlert or PopulateSpellNames not found!")
+    end
+end
+
 -- Create icon with menu
 ModernSpellAlertOptions = AceLibrary("AceAddon-2.0"):new("AceDB-2.0", "FuBarPlugin-2.0")
 ModernSpellAlertOptions.name = "FuBar - ModernSpellAlert"
@@ -14,242 +39,165 @@ ModernSpellAlertOptions.defaultMinimapPosition = 200
 ModernSpellAlertOptions.independentProfile = true
 ModernSpellAlertOptions.hideWithoutStandby = false
 
+local classSpells = {
+    DRUID = {
+	"Abolish Poison",
+	"Barkskin",
+	"Dash",
+	"Enrage",
+	"Entangling Roots",
+	"Frenzied Regeneration",
+	"Healing Touch",
+	"Hibernate",
+	"Hurricane",
+	"Insect Swarm",
+	"Moonfire",
+	"Nature's Grasp",
+	"Rebirth",
+	"Regrowth",
+	"Rejuvenation",
+	"Starfire",
+	"Tranquility",
+	"Wrath",
+	},
+    HUNTER = {
+	
+	"Aimed Shot",
+	"Arcane Shot",
+	"Feign Death",
+	"Hunter's Mark",
+	},
+    MAGE = {
+	"Mana Shield",
+	"Pyroblast",
+	},
+    PALADIN = {
+	"Hammer of Justice",
+	},
+    PRIEST = {
+	"Psychic Scream",
+	},
+    ROGUE = {
+	"Blind",
+	},
+    SHAMAN = {
+	"Healing Wave",
+	},
+    WARLOCK = {
+	"Drain Life",
+	},
+    WARRIOR = {
+	"Deathwish",
+	},
+}
+
+local function sanitizeKey(spellName)
+    local sanitized = ""
+    for i = 1, string.len(spellName) do
+        local char = string.sub(spellName, i, i)
+        if char == " " then
+            sanitized = sanitized .. "_"
+        else
+            sanitized = sanitized .. char
+        end
+    end
+    return sanitized
+end
+
+
+-- Function to generate subgroup with 8 toggle options
+local function generateSpellOptions(spellName)
+    local options = {}
+    local keys = {
+        "EnabledOnPlayer", "EnabledByPlayer",
+        "EnabledOnTarget", "EnabledByTarget",
+        "EnabledOnFriendly", "EnabledByFriendly",
+        "EnabledOnHostile", "EnabledByHostile"
+    }
+    local nameMapping = {
+        EnabledOnPlayer = "on Player",
+        EnabledByPlayer = "by Player",
+        EnabledOnTarget = "on Target",
+        EnabledByTarget = "by Target",
+        EnabledOnFriendly = "on Friendly",
+        EnabledByFriendly = "by Friendly",
+        EnabledOnHostile = "on Hostile",
+        EnabledByHostile = "by Hostile",
+    }
+
+    for i = 1, table.getn(keys) do
+        local key = keys[i]
+        local descriptionSuffix = nameMapping[key] or "Unknown"
+
+        options[key] = {
+            type = "toggle",
+            name = "Track " .. descriptionSuffix,
+            desc = "Enable or disable tracking when " .. spellName .. " is cast " .. descriptionSuffix .. ".",
+            order = i,
+            get = function() return getSpellSetting(spellName, key) end,
+            set = function(value) setSpellSetting(spellName, key, value) end,
+        }
+    end
+    return options
+end
+
+-- Function to generate menu structure for all classes and spells
+local function generateClassSpellMenu()
+    local menu = {}
+
+    for class, spells in pairs(classSpells) do
+        -- Sort the spells table alphabetically
+        table.sort(spells, function(a, b)
+            return a < b
+        end)
+
+        menu[class] = {
+            type = "group",
+            name = class,
+            desc = "Settings for " .. class .. " spells.",
+            order = 1,
+            args = {},
+        }
+
+        for i, spell in ipairs(spells) do
+            local sanitizedKey = sanitizeKey(spell)
+
+            menu[class].args[sanitizedKey] = {
+                type = "group",
+                name = spell,
+                desc = "Settings for " .. spell .. " spell.",
+                order = i,
+                args = generateSpellOptions(spell),
+            }
+        end
+    end
+
+    return menu
+end
+
+
+
+
 -- Command table for menu options
 ModernSpellAlertSettings.cmdtable = {
     type = "group",
-    args = {
-        MAGE = {
-            type = "group",
-            name = "Mage",
-            desc = "Settings for Mage spells.",
-            order = 2,
-            args = {
-				manaShield = {
-					type = "group",
-                    name = "Mana Shield",
-                    desc = "Settings for Mana Shield spell.",
-                    order = 18,
-                    args = {
-                        EnabledByTarget = {
-                            type = "toggle",
-                            name = "Track by Target",
-                            desc = "Enable or disable tracking when Mana Shield is cast by your target.",
-                            order = 1,
-                            get = function() return ModernSpellAlertSettings.db.profile.manaShieldEnabledByTarget end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.manaShieldEnabledByTarget = value
-                                print("Mana Shield (by Target) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-                        EnabledByFriendly = {
-                            type = "toggle",
-                            name = "Track by Friendly",
-                            desc = "Enable or disable tracking when Mana Shield is cast by a friendly unit.",
-                            order = 2,
-                            get = function() return ModernSpellAlertSettings.db.profile.manaShieldEnabledByFriendly end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.manaShieldEnabledByFriendly = value
-                                print("Mana Shield (by Friendly) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-                        EnabledByHostile = {
-                            type = "toggle",
-                            name = "Track by Hostile",
-                            desc = "Enable or disable tracking when Mana Shield is cast by a hostile unit.",
-                            order = 3,
-                            get = function() return ModernSpellAlertSettings.db.profile.manaShieldEnabledByHostile end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.manaShieldEnabledByHostile = value
-                                print("Mana Shield (by Hostile) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-					},
-                },
-				pyroblast = {
-					type = "group",
-                    name = "Pyroblast",
-                    desc = "Settings for Pyroblast spell.",
-                    order = 19,
-                    args = {
-						EnabledPlayer = {
-                            type = "toggle",
-                            name = "Track on Player",
-                            desc = "Enable or disable tracking when Pyroblast is cast on you.",
-                            order = 1,
-                            get = function() return ModernSpellAlertSettings.db.profile.pyroblastEnabledPlayer end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.pyroblastEnabledPlayer = value
-                                print("Pyroblast (on Player) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-                        EnabledOnTarget = {
-                            type = "toggle",
-                            name = "Track on Target",
-                            desc = "Enable or disable tracking when Pyroblast is cast on your target.",
-                            order = 2,
-                            get = function() return ModernSpellAlertSettings.db.profile.pyroblastEnabledOnTarget end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.pyroblastEnabledOnTarget = value
-                                print("Pyroblast (on Target) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-						EnabledByTarget = {
-                            type = "toggle",
-                            name = "Track by Target",
-                            desc = "Enable or disable tracking when Pyroblast is cast by your target.",
-                            order = 3,
-                            get = function() return ModernSpellAlertSettings.db.profile.pyroblastEnableFromTarget end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.pyroblastEnabledByTarget = value
-                                print("Pyroblast (by Target) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-                        EnabledOnFriendly = {
-                            type = "toggle",
-                            name = "Track on Friendly",
-                            desc = "Enable or disable tracking when Pyroblast is cast on a friendly unit.",
-                            order = 4,
-                            get = function() return ModernSpellAlertSettings.db.profile.pyroblastEnabledOnFriendly end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.pyroblastEnabledOnFriendly = value
-                                print("Pyroblast (on Friendly) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-						EnabledByFriendly = {
-                            type = "toggle",
-                            name = "Track by Friendly",
-                            desc = "Enable or disable tracking when Pyroblast is cast by a friendly unit.",
-                            order = 5,
-                            get = function() return ModernSpellAlertSettings.db.profile.pyroblastEnabledByFriendly end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.pyroblastEnabledByFriendly = value
-                                print("Pyroblast (by Friendly) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-                        EnabledOnHostile = {
-                            type = "toggle",
-                            name = "Track on Hostile",
-                            desc = "Enable or disable tracking when Pyroblast is cast on a hostile unit.",
-                            order = 6,
-                            get = function() return ModernSpellAlertSettings.db.profile.pyroblastEnabledOnHostile end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.pyroblastEnabledOnHostile = value
-                                print("Pyroblast (on Hostile) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-						EnabledByHostile = {
-                            type = "toggle",
-                            name = "Track by Hostile",
-                            desc = "Enable or disable tracking when Pyroblast is cast by a hostile unit.",
-                            order = 7,
-                            get = function() return ModernSpellAlertSettings.db.profile.pyroblastEnabledByHostile end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.pyroblastEnabledByHostile = value
-                                print("Pyroblast (by Hostile) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-					},
-                },
-            },
-        },
-        SHAMAN = {
-            type = "group",
-            name = "Shaman",
-            desc = "Settings for Shaman spells.",
-            order = 3,
-            args = {
-                healingWave = {
-                    type = "group",
-                    name = "Healing Wave",
-                    desc = "Settings for Healing Wave spell.",
-                    order = 1,
-                    args = {
-						EnabledPlayer = {
-                            type = "toggle",
-                            name = "Track on Player",
-                            desc = "Enable or disable tracking when Healing Wave is cast on you.",
-                            order = 1,
-                            get = function() return ModernSpellAlertSettings.db.profile.healingWaveEnabledPlayer end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.healingWaveEnabledPlayer = value
-                                print("Healing Wave (on Player) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-                        EnabledOnTarget = {
-                            type = "toggle",
-                            name = "Track on Target",
-                            desc = "Enable or disable tracking when Healing Wave is cast on your target.",
-                            order = 2,
-                            get = function() return ModernSpellAlertSettings.db.profile.healingWaveEnabledOnTarget end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.healingWaveEnabledOnTarget = value
-                                print("Healing Wave (on Target) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-						EnabledByTarget = {
-                            type = "toggle",
-                            name = "Track by Target",
-                            desc = "Enable or disable tracking when Healing Wave is cast by your target.",
-                            order = 3,
-                            get = function() return ModernSpellAlertSettings.db.profile.pyroblastEnableFromTarget end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.healingWaveEnabledByTarget = value
-                                print("Healing Wave (by Target) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-                        EnabledOnFriendly = {
-                            type = "toggle",
-                            name = "Track on Friendly",
-                            desc = "Enable or disable tracking when Healing Wave is cast on a friendly unit.",
-                            order = 4,
-                            get = function() return ModernSpellAlertSettings.db.profile.healingWaveEnabledOnFriendly end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.healingWaveEnabledOnFriendly = value
-                                print("Healing Wave (on Friendly) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-						EnabledByFriendly = {
-                            type = "toggle",
-                            name = "Track by Friendly",
-                            desc = "Enable or disable tracking when Healing Wave is cast by a friendly unit.",
-                            order = 5,
-                            get = function() return ModernSpellAlertSettings.db.profile.healingWaveEnabledByFriendly end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.healingWaveEnabledByFriendly = value
-                                print("Healing Wave (by Friendly) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-                        EnabledOnHostile = {
-                            type = "toggle",
-                            name = "Track on Hostile",
-                            desc = "Enable or disable tracking when Healing Wave is cast on a hostile unit.",
-                            order = 6,
-                            get = function() return ModernSpellAlertSettings.db.profile.healingWaveEnabledOnHostile end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.healingWaveEnabledOnHostile = value
-                                print("Healing Wave (on Hostile) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-						EnabledByHostile = {
-                            type = "toggle",
-                            name = "Track by Hostile",
-                            desc = "Enable or disable tracking when Healing Wave is cast by a hostile unit.",
-                            order = 7,
-                            get = function() return ModernSpellAlertSettings.db.profile.healingWaveEnabledByHostile end,
-                            set = function(value)
-                                ModernSpellAlertSettings.db.profile.healingWaveEnabledByHostile = value
-                                print("Healing Wave (by Hostile) tracking is now " .. (value and "enabled" or "disabled"))
-                            end,
-                        },
-					},
-                },
-            },
-        },
-        showMinimapIcon = {
+    args = (function()
+        -- Generate class spell menu
+        local menu = generateClassSpellMenu()
+
+        -- Add a blank space
+        menu.blank_space = {
+            type = "header",
+            name = " ", -- Displayed as a blank line
+            order = 1000, -- High order value to ensure it appears after the classes
+        }
+
+        -- Add "Show minimap icon" after the blank space
+        menu.showMinimapIcon = {
             type = "toggle",
             name = "Show Minimap Icon",
             desc = "Toggle the visibility of the minimap icon.",
-            order = 10,
+            order = 1010,
             get = function() return ModernSpellAlertSettings.db.profile.showMinimapIcon end,
             set = function(value)
                 ModernSpellAlertSettings.db.profile.showMinimapIcon = value
@@ -259,9 +207,12 @@ ModernSpellAlertSettings.cmdtable = {
                     ModernSpellAlertOptions:Hide()
                 end
             end,
-        },
-    },
+        }
+
+        return menu
+    end)(),
 }
+
 
 -- Bind the command table to the icon menu
 ModernSpellAlertOptions.OnMenuRequest = ModernSpellAlertSettings.cmdtable
@@ -285,3 +236,12 @@ end
 
 -- Register chat command for menu access
 ModernSpellAlertSettings:RegisterChatCommand({"/modernspellalertsettings"}, ModernSpellAlertSettings.cmdtable)
+
+-- Synchronize settings with ModernSpellAlert on load
+ModernSpellAlertSettings:RegisterEvent("PLAYER_LOGIN", function()
+    if ModernSpellAlert and ModernSpellAlert.PopulateSpellNames then
+        ModernSpellAlert:PopulateSpellNames()
+    else
+        DEFAULT_CHAT_FRAME:AddMessage("Error: ModernSpellAlert not loaded!")
+    end
+end)

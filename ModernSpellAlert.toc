@@ -6,9 +6,11 @@
 ## SavedVariablesPerCharacter: ModernSpellAlertSettingsDB
 ## X-Embeds: Ace2, FuBarPlugin-2.0, CompostLib, DewDropLib, TabletLib
 
+# Core Libraries
 libs\AceLibrary\AceLibrary.lua
-
 libs\AceOO-2.0\AceOO-2.0.lua
+
+# Ace Framework
 libs\AceAddon-2.0\AceAddon-2.0.lua
 libs\AceConsole-2.0\AceConsole-2.0.lua
 libs\AceHook-2.1\AceHook-2.1.lua
@@ -18,9 +20,13 @@ libs\AceEvent-2.0\AceEvent-2.0.lua
 libs\AceLocale-2.2\AceLocale-2.2.lua
 libs\AceModuleCore-2.0\AceModuleCore-2.0.lua
 
+# Additional Libraries
+libs\CompostLib\Compost-2.0.lua
 libs\Dewdrop\Dewdrop-2.0.lua
 libs\Tablet\Tablet-2.0.lua
 libs\FuBarPlugin\FuBarPlugin-2.0.lua
 
+# Addon Files
 ModernSpellAlert.lua
 ModernSpellAlertSettings.lua
+
