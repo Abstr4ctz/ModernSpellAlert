@@ -7,6 +7,7 @@ ModernSpellAlertSettings = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0", "AceDe
 ModernSpellAlertSettings:RegisterDB("ModernSpellAlertSettingsDB")
 ModernSpellAlertSettings:RegisterDefaults("profile", {
     showMinimapIcon = true,
+	playSoundForSpell = false,
     framePosX = 0, -- Default X offset
     framePosY = 200, -- Default Y offset
     fadeTime = 3, -- Default fade time in seconds
@@ -224,7 +225,7 @@ local classSpells = {
 	},
 }
 
---- Sanitizes a spell name into a key-friendly format.
+-- Sanitizes a spell name into a key-friendly format.
 local function sanitizeKey(spellName)
     local sanitized = ""
     for i = 1, string.len(spellName) do
@@ -317,15 +318,30 @@ ModernSpellAlertSettings.cmdtable = {
     args = (function()
         local menu = generateClassSpellMenu()
 
-        menu.blank_space = {
+        menu.blank_space_one = {
             type = "header",
             name = " ",
             order = 20,
         }
-		menu.blank_space = {
+		
+		menu.playSoundForSpell = {
+			type = "toggle",
+			name = "Play Sound for Spells",
+			desc = "Enable or disable playing sound alerts for spells.",
+			get = function()
+				return ModernSpellAlertSettings.db.profile.playSoundForSpell
+			end,
+			set = function(value)
+				ModernSpellAlertSettings.db.profile.playSoundForSpell = value
+				DEFAULT_CHAT_FRAME:AddMessage("Play Sound for Spells is now " .. (value and "enabled" or "disabled") .. ".")
+			end,
+			order = 21, -- Adjust order to position appropriately in the menu
+		}
+		
+		menu.blank_space_two = {
             type = "header",
             name = " ",
-            order = 21,
+            order = 22,
         }
 		
 		menu.fadeTime = {
@@ -339,14 +355,14 @@ ModernSpellAlertSettings.cmdtable = {
 			set = function(value)
 				ModernSpellAlertSettings.db.profile.fadeTime = value
 			end,
-			order = 22,
+			order = 23,
 		}
 		
 		menu.framePosition = {
 			type = "group",
 			name = "Frame Position",
 			desc = "Adjust the position of the alert frame.",
-			order = 23,
+			order = 24,
 			args = {
 				posX = {
 					type = "range",
@@ -398,7 +414,7 @@ ModernSpellAlertSettings.cmdtable = {
             type = "toggle",
             name = "Show Minimap Icon",
             desc = "Toggle the visibility of the minimap icon.",
-            order = 24,
+            order = 25,
             get = function() return ModernSpellAlertSettings.db.profile.showMinimapIcon end,
             set = function(value)
                 ModernSpellAlertSettings.db.profile.showMinimapIcon = value
