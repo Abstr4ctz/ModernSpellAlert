@@ -9,6 +9,7 @@ A powerful, lightweight, and highly customizable addon for tracking spell casts 
 - ✔️ Track any spell (e.g., Fireball) or proc (e.g., Shadow Trance).
 - ✔️ Alerts about incoming spells at **cast start** for quick reactions.
 - ✔️ Add your own spells and procs easily.
+- ✔️ Play sound effects for spells included in [Rank14losSA](https://github.com/Fiskehatt/Rank14losSA).
 - ✔️ Fully customizable tracking options and visuals.
 
 ---
