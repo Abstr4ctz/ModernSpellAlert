@@ -36,6 +36,23 @@ If spells are targetted, it will alert at start of cast. To trigger alert for Ao
 
 ---
 
+## ✨ Quick Targeting
+![WoW 2025-01-22 21-29-55-275](https://github.com/user-attachments/assets/2bef6d11-f9b5-4402-98b0-61dbafd3af3b)
+
+To quickly target last Caster or Target, simply keybind the options shown on the image.<br/><br/>
+Or you can use macros:
+```
+/msacaster
+/msatarget
+```
+For example:
+```
+/msacaster
+/CastSpellByName Counterspell
+```
+
+---
+
 ## ✨ Add Your Own Spells and Procs
 ![Before Adding Spells](https://github.com/user-attachments/assets/7428d645-3dc5-4b01-9cd5-8a9cfdd3e7d5)  
 ![After Adding Spells](https://github.com/user-attachments/assets/54fed797-91dd-4f3b-bff8-f63e9318dba8)
