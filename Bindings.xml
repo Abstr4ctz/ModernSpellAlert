@@ -1,0 +1,8 @@
+<Bindings>
+	<Binding name="Target Last Caster" header="MODERNSPELLALERT">
+		MSACaster()
+	</Binding>
+	<Binding name="Target Last Target">
+		MSATarget()
+	</Binding>
+</Bindings>
