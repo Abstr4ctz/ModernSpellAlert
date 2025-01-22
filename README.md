@@ -7,8 +7,10 @@ A powerful, lightweight, and highly customizable addon for tracking spell casts 
 
 ## ✨ Features
 - ✔️ Track any spell (e.g., Fireball) or proc (e.g., Shadow Trance).
+- ✔️ Track who casted AoE spells, totems, traps that affect you.
 - ✔️ Alerts about incoming spells at **cast start** for quick reactions.
 - ✔️ Add your own spells and procs easily.
+- ✔️ Quickly target the CASTER and the TARGET of lastly triggered alert.
 - ✔️ Play sound effects for spells included in [Rank14losSA](https://github.com/Fiskehatt/Rank14losSA).
 - ✔️ Fully customizable tracking options and visuals.
 
@@ -26,6 +28,10 @@ A powerful, lightweight, and highly customizable addon for tracking spell casts 
 | **Track by Friendly** | Tracks spells cast by friendly units other than the Player. |
 | **Track on Hostile**  | Tracks spells targeting hostile units.        |
 | **Track by Hostile**  | Tracks spells cast by hostile units.          |
+
+### 💡 Note
+For spells that are considered AoE and don't have a target, **Track on Player** will trigger alert on spell's contact with player.\
+If spells are targetted, it will alert at start of cast. To trigger alert for AoE spells when cast is being started, pick **Track by Target** or **Track on Hostile**.
 
 
 ---
