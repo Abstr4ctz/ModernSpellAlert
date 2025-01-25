@@ -435,6 +435,7 @@ local classSpells = {
 		"Ritual of Doom",
 		"Ritual of Summoning",
 		"Searing Pain",
+		"Seduction",
 		"Sense Demons",
 		"Shadow Bolt",
 		"Shadow Ward",
