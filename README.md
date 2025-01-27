@@ -8,6 +8,7 @@ A powerful, lightweight, and highly customizable addon for tracking spell casts 
 ## ✨ Features
 - ✔️ Track any spell (e.g., Fireball) or proc (e.g., Shadow Trance).
 - ✔️ Track who casted AoE spells, totems, traps that affect you.
+- ✔️ Track items ussage (Trinkets, Potions, Items, etc.).
 - ✔️ Alerts about incoming spells at **cast start** for quick reactions.
 - ✔️ Add your own spells and procs easily.
 - ✔️ Quickly target the CASTER and the TARGET of lastly triggered alert.
@@ -69,10 +70,8 @@ This addon is currently in beta. Some features are still under development.
 ---
 
 ## 🔧 To-Do List
-- ⚙️ Inform about **items usage** (e.g., trinket activations).  
 - ⚙️ Add spell priority levels for alerts.  
 - ⚙️ Add sounds to enhance alerts.  
-- ⚙️ Add extra fonts for customization.
 
 ---
 
