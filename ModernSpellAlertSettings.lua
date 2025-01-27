@@ -621,7 +621,12 @@ local racialsAndItems = {
 	{ displayName = "Arena Grand Master",               realName = "Aura of Protection" },
 	{ displayName = "Scaleshield of Emerald Flight",    realName = "Emerald Transformation" },
 	{ displayName = "Dark Iron Hooked Net",             realName = "Trap" },
-	{ displayName = "Insignia" },
+	{ displayName = "Insignia TurtleWoW",               realName = "Insignia" },
+	{ displayName = "Insignia Druid",                   realName = "Immune Charm/Fear/Stun" },
+	{ displayName = "Insignia Mage",                    realName = "Immune Fear/Polymorph/Snare" },
+	{ displayName = "Insignia Paladin/Priest",          realName = "Immune Fear/Polymorph/Stun" },
+	{ displayName = "Insignia Rogue/Warlock",           realName = "Immune Charm/Fear/Polymorph" },
+	{ displayName = "Insignia Hunter/Shaman/Warrior",   realName = "Immune Root/Snare/Stun" },
 	-- { displayName = "Large Rope Net", realName = "Trap" },
 	-- { displayName = "Shard of Nightmare", realName = "Sleep" },
 }

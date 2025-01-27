@@ -227,6 +227,12 @@ local customIcons = {
     ["Aura of Protection"] = "Interface\\Icons\\INV_Misc_ArmorKit_04",
     ["Emerald Transformation"] = "Interface\\Icons\\INV_Shield_23",
     ["Trap"] = "Interface\\Icons\\INV_Misc_Net_01",
+    ["Insignia"] = "Interface\\Icons\\INV_Jewelry_TrinketPvp_02",
+    ["Immune Root/Snare/Stun"] = "Interface\\Icons\\INV_Jewelry_TrinketPvp_02",
+    ["Immune Charm/Fear/Polymorph"] = "Interface\\Icons\\INV_Jewelry_TrinketPvp_02",
+    ["Immune Fear/Polymorph/Snare"] = "Interface\\Icons\\INV_Jewelry_TrinketPvp_02",
+    ["Immune Charm/Fear/Stun"] = "Interface\\Icons\\INV_Jewelry_TrinketPvp_02",
+    ["Immune Fear/Polymorph/Stun"] = "Interface\\Icons\\INV_Jewelry_TrinketPvp_02",
 }
 -- ==============================
 -- Frame Management
@@ -522,14 +528,14 @@ function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spe
         local casterName = UnitName(casterGUID) or "Unknown"
         local targetName = targetGUID and UnitName(targetGUID) or "None"
 
-       -- DEFAULT_CHAT_FRAME:AddMessage("  Caster GUID: " .. tostring(casterName))
-       -- DEFAULT_CHAT_FRAME:AddMessage("  Target GUID: " .. tostring(targetName))
-       -- DEFAULT_CHAT_FRAME:AddMessage("  Event Type: " .. tostring(eventType))
-       -- DEFAULT_CHAT_FRAME:AddMessage("  Spell ID: " .. tostring(spellID))
-       -- DEFAULT_CHAT_FRAME:AddMessage("  Spell Name:" .. tostring(spellName) .. ".")
-       -- if eventType == "CAST" then
-       -- DEFAULT_CHAT_FRAME:AddMessage("  Cast Duration: " .. tostring(castDuration))
-       -- end
+        -- DEFAULT_CHAT_FRAME:AddMessage("  Caster GUID: " .. tostring(casterName))
+        -- DEFAULT_CHAT_FRAME:AddMessage("  Target GUID: " .. tostring(targetName))
+        -- DEFAULT_CHAT_FRAME:AddMessage("  Event Type: " .. tostring(eventType))
+        -- DEFAULT_CHAT_FRAME:AddMessage("  Spell ID: " .. tostring(spellID))
+        -- DEFAULT_CHAT_FRAME:AddMessage("  Spell Name:" .. tostring(spellName) .. ".")
+        -- if eventType == "CAST" then
+        -- DEFAULT_CHAT_FRAME:AddMessage("  Cast Duration: " .. tostring(castDuration))
+        -- end
 
         -- We're skipping the Magma Totem spam.
         if string.find(casterName, "^Magma Totem%s*%s*([IVXLCDM]*)$") then
