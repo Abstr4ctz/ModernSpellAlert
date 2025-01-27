@@ -522,14 +522,14 @@ function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spe
         local casterName = UnitName(casterGUID) or "Unknown"
         local targetName = targetGUID and UnitName(targetGUID) or "None"
 
-        DEFAULT_CHAT_FRAME:AddMessage("  Caster GUID: " .. tostring(casterName))
-        DEFAULT_CHAT_FRAME:AddMessage("  Target GUID: " .. tostring(targetName))
-        DEFAULT_CHAT_FRAME:AddMessage("  Event Type: " .. tostring(eventType))
-        DEFAULT_CHAT_FRAME:AddMessage("  Spell ID: " .. tostring(spellID))
-        DEFAULT_CHAT_FRAME:AddMessage("  Spell Name:" .. tostring(spellName) .. ".")
-        if eventType == "CAST" then
-        DEFAULT_CHAT_FRAME:AddMessage("  Cast Duration: " .. tostring(castDuration))
-        end
+       -- DEFAULT_CHAT_FRAME:AddMessage("  Caster GUID: " .. tostring(casterName))
+       -- DEFAULT_CHAT_FRAME:AddMessage("  Target GUID: " .. tostring(targetName))
+       -- DEFAULT_CHAT_FRAME:AddMessage("  Event Type: " .. tostring(eventType))
+       -- DEFAULT_CHAT_FRAME:AddMessage("  Spell ID: " .. tostring(spellID))
+       -- DEFAULT_CHAT_FRAME:AddMessage("  Spell Name:" .. tostring(spellName) .. ".")
+       -- if eventType == "CAST" then
+       -- DEFAULT_CHAT_FRAME:AddMessage("  Cast Duration: " .. tostring(castDuration))
+       -- end
 
         -- We're skipping the Magma Totem spam.
         if string.find(casterName, "^Magma Totem%s*%s*([IVXLCDM]*)$") then
