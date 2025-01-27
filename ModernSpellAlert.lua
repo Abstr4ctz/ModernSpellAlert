@@ -132,7 +132,6 @@ local ModernSpellAlertSounds = {
     ["Will of the Forsaken"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\WilloftheForsaken.ogg",
     ["Wyvern Sting"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\WyvernSting.ogg",
 }
-
 -- ==============================
 -- Font Paths
 -- ==============================
@@ -153,6 +152,82 @@ local availableFonts = {
     "Interface\\AddOns\\ModernSpellAlert\\fonts\\SquadaOne.ttf",
 }
 
+-- ==============================
+-- Custom Icons
+-- ==============================
+local customIcons = {
+    ["Arcanite Dragonling"] = "Interface\\Icons\\INV_Misc_Head_Dragon_01",
+    ["Advanced Target Dummy"] = "Interface\\Icons\\INV_Crate_06",
+    ["Battle Chicken"] = "Interface\\Icons\\Spell_Magic_PolymorphChicken",
+    ["Cloaking"] = "Interface\\Icons\\INV_Gizmo_01",
+    ["Defibrillate"] = "Interface\\Icons\\INV_Misc_EngGizmos_10",
+    ["Discombobulate"] = "Interface\\Icons\\INV_Misc_SpyGlass_02",
+    ["Everlook Transporter"] = "Interface\\Icons\\INV_Misc_EngGizmos_07",
+    ["Explosive Sheep"] = "Interface\\Icons\\Spell_Nature_Polymorph",
+    ["Field Repair Bot 74A"] = "Interface\\Icons\\INV_Egg_05",
+    ["Fire Resistance"] = "Interface\\Icons\\INV_Gizmo_01",
+    ["Fire Reflector"] = "Interface\\Icons\\INV_Misc_EngGizmos_04",
+    ["Frost Resistance"] = "Interface\\Icons\\INV_Gizmo_01",
+    ["Frost Reflector"] = "Interface\\Icons\\INV_Misc_EngGizmos_02",
+    ["Gnomish Death Ray"] = "Interface\\Icons\\INV_Gizmo_08",
+    ["Gnomish Mind Control Cap"] = "Interface\\Icons\\INV_Helmet_49",
+    ["Gnomish Rocket Boots"] = "Interface\\Icons\\INV_Boots_02",
+    ["Gnomish Transporter"] = "Interface\\Icons\\INV_Misc_EngGizmos_12",
+    ["Goblin Land Mine"] = "Interface\\Icons\\INV_Shield_08",
+    ["Goblin Rocket Boots"] = "Interface\\Icons\\INV_Gizmo_RocketBoot_01",
+    ["Goblin Mortar"] = "Interface\\Icons\\INV_Musket_01",
+    ["Invisibility"] = "Interface\\Icons\\INV_Potion_25",
+    ["Lesser Invisibility"] = "Interface\\Icons\\INV_Potion_18",
+    ["Masterwork Target Dummy"] = "Interface\\Icons\\INV_Crate_06",
+    ["Mithril Mechanical Dragonling"] = "Interface\\Icons\\INV_Misc_Head_Dragon_01",
+    ["Mechanical Dragonling"] = "Interface\\Icons\\INV_Misc_Head_Dragon_01",
+    ["Net-o-Matic"] = "Interface\\Icons\\INV_Misc_Net_01",
+    ["Reckless Charge"] = "Interface\\Icons\\INV_Helmet_49",
+    ["Rocket Boots"] = "Interface\\Icons\\INV_Boots_05",
+    ["Shrink Ray"] = "Interface\\Icons\\INV_Gizmo_09",
+    ["Target Dummy"] = "Interface\\Icons\\INV_Crate_06",
+    ["Harm Prevention Belt"] = "Interface\\Icons\\INV_Belt_06",
+    ["Shadow Reflector"] = "Interface\\Icons\\INV_Misc_EngGizmos_16",
+    ["Rough Dynamite"] = "Interface\\Icons\\INV_Misc_Bomb_06",
+    ["Rough Copper Bomb"] = "Interface\\Icons\\INV_Misc_Bomb_09",
+    ["Coarse Dynamite"] = "Interface\\Icons\\INV_Misc_Bomb_06",
+    ["Ez-Thro Dynamite"] = "Interface\\Icons\\INV_Misc_Bomb_06",
+    ["Large Copper Bomb"] = "Interface\\Icons\\INV_Misc_Bomb_01",
+    ["Small Bronze Bomb"] = "Interface\\Icons\\INV_Misc_Bomb_09",
+    ["Heavy Dynamite"] = "Interface\\Icons\\INV_Misc_Bomb_06",
+    ["Big Bronze Bomb"] = "Interface\\Icons\\INV_Misc_Bomb_05",
+    ["Solid Dynamite"] = "Interface\\Icons\\INV_Misc_Bomb_06",
+    ["Iron Grenade"] = "Interface\\Icons\\INV_Misc_Bomb_08",
+    ["Flash Bomb"] = "Interface\\Icons\\INV_Misc_Ammo_Bullet_01",
+    ["Big Iron Bomb"] = "Interface\\Icons\\INV_Misc_Bomb_01",
+    ["Mithril Frag Bomb"] = "Interface\\Icons\\INV_Misc_Bomb_02",
+    ["Hi-Explosive Bomb"] = "Interface\\Icons\\INV_Misc_Bomb_07",
+    ["The Big One"] = "Interface\\Icons\\INV_Misc_Bomb_04",
+    ["Dense Dynamite"] = "Interface\\Icons\\INV_Misc_Bomb_06",
+    ["Thorium Grenade"] = "Interface\\Icons\\INV_Misc_Bomb_08",
+    ["Dark Iron Bomb"] = "Interface\\Icons\\INV_Misc_Bomb_05",
+    ["Arcane Bomb"] = "Interface\\Icons\\Spell_Shadow_MindBomb",
+    ["Fire Protection"] = "Interface\\Icons\\INV_Potion_24",
+    ["Shadow Protection"] = "Interface\\Icons\\INV_Potion_23",
+    ["Frost Protection"] = "Interface\\Icons\\INV_Potion_20",
+    ["Arcane Protection"] = "Interface\\Icons\\INV_Potion_83",
+    ["Nature Protection "] = "Interface\\Icons\\INV_Potion_22",
+    ["Holy Protection"] = "Interface\\Icons\\INV_Potion_09",
+    ["Invulnerability"] = "Interface\\Icons\\INV_Potion_62",
+    ["Free Action"] = "Interface\\Icons\\INV_Potion_04",
+    ["Living Free Action"] = "Interface\\Icons\\INV_Potion_07",
+    ["Tidal Charm"] = "Interface\\Icons\\INV_Misc_Rune_01",
+    ["Flee"] = "Interface\\Icons\\INV_Misc_Bone_ElfSkull_01",
+    ["Speed"] = "Interface\\Icons\\INV_Misc_PocketWatch_01",
+    ["First Aid"] = "Interface\\Icons\\INV_Misc_Bandage_12",
+    ["Sleep"] = "Interface\\Icons\\INV_Misc_Dust_02",
+    ["Restoration"] = "Interface\\Icons\\INV_Potion_01",
+    ["Stealth Detection"] = "Interface\\Icons\\INV_Potion_36",
+    ["Immune Root"] = "Interface\\Icons\\INV_Belt_25",
+    ["Aura of Protection"] = "Interface\\Icons\\INV_Misc_ArmorKit_04",
+    ["Emerald Transformation"] = "Interface\\Icons\\INV_Shield_23",
+    ["Trap"] = "Interface\\Icons\\INV_Misc_Net_01",
+}
 -- ==============================
 -- Frame Management
 -- ==============================
@@ -312,6 +387,12 @@ function ModernSpellAlert:CleanupTrackingTables()
     end
 end
 
+
+function ModernSpellAlert:TrimSpellName(spellName)
+    if not spellName then return nil end
+    return string.gsub(spellName, "^%s*(.-)%s*$", "%1")
+end
+
 -- ==============================
 -- List of Tracked Spells
 -- ==============================
@@ -373,7 +454,7 @@ function ModernSpellAlert:ShowAlert(casterName, targetName, showTarget, icon, sp
     end
 
     self.frame.casterText:SetText(casterName)
-    self.frame.spellIcon:SetTexture(icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+    self.frame.spellIcon:SetTexture(customIcons[spellName] or icon or "Interface\\Icons\\INV_Misc_QuestionMark")
 
     if showTarget then
         self.frame.targetText:SetText(targetName)
@@ -437,17 +518,18 @@ end
 function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spellID, castDuration)
     if event == "UNIT_CASTEVENT" then
         local spellName, _, icon = SpellInfo(spellID)
+        spellName = self:TrimSpellName(spellName)
         local casterName = UnitName(casterGUID) or "Unknown"
         local targetName = targetGUID and UnitName(targetGUID) or "None"
 
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Caster GUID: " .. tostring(casterName))
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Target GUID: " .. tostring(targetName))
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Event Type: " .. tostring(eventType))
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Spell ID: " .. tostring(spellID))
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Spell Name: " .. tostring(spellName))
-        -- if eventType == "CAST" then
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Cast Duration: " .. tostring(castDuration))
-        -- end
+        DEFAULT_CHAT_FRAME:AddMessage("  Caster GUID: " .. tostring(casterName))
+        DEFAULT_CHAT_FRAME:AddMessage("  Target GUID: " .. tostring(targetName))
+        DEFAULT_CHAT_FRAME:AddMessage("  Event Type: " .. tostring(eventType))
+        DEFAULT_CHAT_FRAME:AddMessage("  Spell ID: " .. tostring(spellID))
+        DEFAULT_CHAT_FRAME:AddMessage("  Spell Name:" .. tostring(spellName) .. ".")
+        if eventType == "CAST" then
+        DEFAULT_CHAT_FRAME:AddMessage("  Cast Duration: " .. tostring(castDuration))
+        end
 
         -- We're skipping the Magma Totem spam.
         if string.find(casterName, "^Magma Totem%s*%s*([IVXLCDM]*)$") then

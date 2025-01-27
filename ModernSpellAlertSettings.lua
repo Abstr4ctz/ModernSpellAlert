@@ -7,22 +7,23 @@ ModernSpellAlertSettings:RegisterDB("ModernSpellAlertSettingsDB")
 ModernSpellAlertSettings:RegisterDefaults("profile", {
 	showMinimapIcon = true,
 	playSoundForSpell = false,
-	framePosX = 0,   -- Default X offset
+	framePosX = 0, -- Default X offset
 	framePosY = 200, -- Default Y offset
-	fadeTime = 3,    -- Default fade time in seconds
-	fontIndex = 2,   -- Default font
+	fadeTime = 3, -- Default fade time in seconds
+	fontIndex = 2, -- Default font
 })
 
 -- ==============================
 -- Menu and Options Management
 -- ==============================
 local classSpells = {
-	DRUID = {
+	Druid = {
 		"Abolish Poison",
 		"Aquatic Form",
 		"Barkskin",
 		"Barkskin (Feral)",
 		"Bash",
+		"Berserk",
 		"Cat Form",
 		"Claw",
 		"Cure Poison",
@@ -70,7 +71,7 @@ local classSpells = {
 		"Travel Form",
 		"Wrath",
 	},
-	HUNTER = {
+	Hunter = {
 		"Aimed Shot",
 		"Arcane Shot",
 		"Aspect of the Beast",
@@ -125,13 +126,15 @@ local classSpells = {
 		"Wing Clip",
 		"Wyvern Sting",
 	},
-	MAGE = {
+	Mage = {
 		"Amplify Magic",
 		"Arcane Brilliance",
 		"Arcane Explosion",
 		"Arcane Intellect",
 		"Arcane Missiles",
 		"Arcane Power",
+		"Arcane Rupture",
+		"Arcane Surge",
 		"Blast Wave",
 		"Blink",
 		"Blizzard",
@@ -160,6 +163,7 @@ local classSpells = {
 		"Ice Barrier",
 		"Ice Block",
 		"Ice Lance",
+		"Icicles",
 		"Mage Armor",
 		"Magic Absorption",
 		"Magic Attunement",
@@ -187,7 +191,7 @@ local classSpells = {
 		"Teleport: Thunder Bluff",
 		"Teleport: Undercity",
 	},
-	PALADIN = {
+	Paladin = {
 		"Blessing of Freedom",
 		"Blessing of Kings",
 		"Blessing of Light",
@@ -197,9 +201,11 @@ local classSpells = {
 		"Blessing of Salvation",
 		"Blessing of Sanctuary",
 		"Blessing of Wisdom",
+		"Bulwark of the Righteous",
 		"Cleanse",
 		"Concentration Aura",
 		"Consecration",
+		"Crusader Strike",
 		"Devotion Aura",
 		"Divine Favor",
 		"Divine Intervention",
@@ -219,10 +225,12 @@ local classSpells = {
 		"Hammer of Wrath",
 		"Hand of Freedom",
 		"Hand of Protection",
+		"Hand of Reckoning",
 		"Hand of Sacrifice",
 		"Holy Light",
 		"Holy Shield",
 		"Holy Shock",
+		"Holy Strike",
 		"Holy Wrath",
 		"Judgement",
 		"Lay on Hands",
@@ -244,8 +252,9 @@ local classSpells = {
 		"Summon Warhorse",
 		"Turn Undead",
 	},
-	PRIEST = {
+	Priest = {
 		"Abolish Disease",
+		"Chastise",
 		"Cure Disease",
 		"Desperate Prayer",
 		"Devouring Plague",
@@ -271,6 +280,7 @@ local classSpells = {
 		"Mind Flay",
 		"Mind Soothe",
 		"Mind Vision",
+		"Pain Spike",
 		"Power Infusion",
 		"Power Word: Fortitude",
 		"Power Word: Shield",
@@ -292,7 +302,7 @@ local classSpells = {
 		"Touch of Weakness",
 		"Vampiric Embrace",
 	},
-	ROGUE = {
+	Rogue = {
 		"Adrenaline Rush",
 		"Ambush",
 		"Backstab",
@@ -303,9 +313,12 @@ local classSpells = {
 		"Cold Blood",
 		"Crippling Poison",
 		"Deadly Poison",
+		"Deadly Throw",
 		"Detection",
 		"Disarm Trap",
 		"Distract",
+		"Dust of Disappearance",
+		"Envenom",
 		"Evasion",
 		"Eviscerate",
 		"Expose Armor",
@@ -316,6 +329,7 @@ local classSpells = {
 		"Hemorrhage",
 		"Kick",
 		"Kidney Shot",
+		"Mark for Death",
 		"Mind-numbing Poison",
 		"Pick Lock",
 		"Pick Pocket",
@@ -327,15 +341,18 @@ local classSpells = {
 		"Rupture",
 		"Sap",
 		"Sinister Strike",
+		"Smoke Bomb",
 		"Sprint",
 		"Stealth",
 		"Slice and Dice",
+		"Surprise Attack",
 		"Vanish",
 		"Wound Poison",
 	},
-	SHAMAN = {
+	Shaman = {
 		"Ancestral Spirit",
 		"Astral Recall",
+		"Calm Elements",
 		"Chain Heal",
 		"Chain Lightning",
 		"Cure Disease",
@@ -343,9 +360,11 @@ local classSpells = {
 		"Disease Cleansing Totem",
 		"Earth Shock",
 		"Earthbind Totem",
+		"Earthshaker Slam",
 		"Earth Shield",
 		"Elemental Mastery",
 		"Far Sight",
+		"Feral Spirit",
 		"Fire Nova Totem",
 		"Fire Resistance Totem",
 		"Flame Shock",
@@ -359,6 +378,7 @@ local classSpells = {
 		"Grounding Totem",
 		"Healing Stream Totem",
 		"Healing Wave",
+		"Hex",
 		"Lesser Healing Wave",
 		"Lightning Bolt",
 		"Lightning Shield",
@@ -378,6 +398,7 @@ local classSpells = {
 		"Stoneskin Totem",
 		"Stormstrike",
 		"Strength of Earth Totem",
+		"Totemic Recall",
 		"Tranquil Air totem",
 		"Tremor Totem",
 		"Water Breathing",
@@ -387,10 +408,12 @@ local classSpells = {
 		"Windfury Weapon",
 		"Windwall Totem",
 	},
-	WARLOCK = {
+	Warlock = {
 		"Amplify Curse",
 		"Banish",
+		"Blood Pact",
 		"Conflagrate",
+		"Consume Shadows",
 		"Corruption",
 		"Create Firestone",
 		"Create Healthstone",
@@ -404,6 +427,7 @@ local classSpells = {
 		"Curse of Shadows",
 		"Curse of Tongues",
 		"Curse of Weakness",
+		"Dark Harvest",
 		"Dark Pact",
 		"Death Coil",
 		"Demon Armor",
@@ -412,6 +436,7 @@ local classSpells = {
 		"Detect Greater Invisibility",
 		"Detect Invisibility",
 		"Detect Lesser Invisibility",
+		"Devour Magic",
 		"Drain Life",
 		"Drain Mana",
 		"Drain Soul",
@@ -419,6 +444,8 @@ local classSpells = {
 		"Eye of Kilrogg",
 		"Fear",
 		"Fel Domination",
+		"Firebolt",
+		"Fire Shield",
 		"Greater Healthstone",
 		"Health Funnel",
 		"Healthstone",
@@ -427,13 +454,19 @@ local classSpells = {
 		"Immolate",
 		"Incinerate",
 		"Inferno",
+		"Lash of Pain",
+		"Lesser Invisibility",
 		"Lesser Healthstone",
 		"Life Tap",
 		"Major Healthstone",
 		"Minor Healthstone",
+		"Paranoia",
+		"Phase Shift",
+		"Power Overwhelming",
 		"Rain of Fire",
 		"Ritual of Doom",
 		"Ritual of Summoning",
+		"Sacrifice",
 		"Searing Pain",
 		"Seduction",
 		"Sense Demons",
@@ -441,18 +474,23 @@ local classSpells = {
 		"Shadow Ward",
 		"Shadowburn",
 		"Siphon Life",
+		"Spell Lock",
 		"Summon Dreadsteed",
 		"Summon Felhunter",
 		"Summon Imp",
 		"Summon Infernal",
 		"Summon Succubus",
 		"Summon Voidwalker",
+		"Soothing Kiss",
 		"Soul Fire",
 		"Soul Link",
 		"Soulstone Ressurection",
+		"Suffering",
+		"Tainted Blood",
+		"Torment",
 		"Unending Breath",
 	},
-	WARRIOR = {
+	Warrior = {
 		"Battle Shout",
 		"Battle Stance",
 		"Berserker Rage",
@@ -472,6 +510,7 @@ local classSpells = {
 		"Hamstring",
 		"Heroic Strike",
 		"Intercept",
+		"Intervene",
 		"Intimidating Shout",
 		"Last Stand",
 		"Mocking Blow",
@@ -479,7 +518,6 @@ local classSpells = {
 		"Overpower",
 		"Piercing Howl",
 		"Pummel",
-		"Rage",
 		"Recklessness",
 		"Rend",
 		"Retaliation",
@@ -496,6 +534,97 @@ local classSpells = {
 		"Whirlwind",
 	},
 }
+
+-- Table for racials and items
+local racialsAndItems = {
+	{ displayName = "Advanced Target Dummy" },
+	{ displayName = "Arcanite Dragonling" },
+	{ displayName = "Berserking" },
+	{ displayName = "Blood Fury" },
+	{ displayName = "Cannibalize" },
+	{ displayName = "Escape Artist" },
+	{ displayName = "Dimensional Ripper - Everlook",    realName = "Everlook Transporter" },
+	{ displayName = "Discombobulator Ray",              realName = "Discombobulate" },
+	{ displayName = "Explosive Sheep" },
+	{ displayName = "Field Repair Bot 74A" },
+	{ displayName = "Find Treasure" },
+	{ displayName = "Flame Deflector",                  realName = "Fire Resistance" },
+	{ displayName = "Gyrofreeze Ice Reflector",         realName = "Frost Reflector" },
+	{ displayName = "Gnomish Battle Chicken",           realName = "Battle Chicken" },
+	{ displayName = "Gnomish Cloaking Device",          realName = "Cloaking" },
+	{ displayName = "Gnomish Death Ray" },
+	{ displayName = "Gnomish Harm Prevention Belt",     realName = "Harm Prevention Belt" },
+	{ displayName = "Gnomish Mind Control Cap" },
+	{ displayName = "Gnomish Net-o-Matic Projector",    realName = "Net-o-Matic" },
+	{ displayName = "Gnomish Shrink Ray",               realName = "Shrink Ray" },
+	{ displayName = "Ultrasafe Transporter: Gadgetzan", realName = "Gnomish Transporter" },
+	{ displayName = "Goblin Jumper Cables",             realName = "Defibrillate" },
+	{ displayName = "Goblin Land Mine" },
+	{ displayName = "Goblin Mortar" },
+	{ displayName = "Goblin Rocket Helmet",             realName = "Reckless Charge" },
+	{ displayName = "Hyper-Radiant Flame Reflector",    realName = "Fire Reflector" },
+	{ displayName = "Invisibility Potion",              realName = "Invisibility" },
+	{ displayName = "Ice Deflector",                    realName = "Frost Resistance" },
+	{ displayName = "Lesser Invisibility Potion",       realName = "Lesser Invisibility" },
+	{ displayName = "Masterwork Target Dummy" },
+	{ displayName = "Mithril Mechanical Dragonling" },
+	{ displayName = "Mechanical Dragonling" },
+	{ displayName = "Perception" },
+	{ displayName = "Goblin Rocket Boots" },
+	{ displayName = "Gnomish Rocket Boots" },
+	{ displayName = "Shadowmeld" },
+	{ displayName = "Stoneform" },
+	{ displayName = "Target Dummy" },
+	{ displayName = "Ultra-Flash Shadow Reflector",     realName = "Shadow Reflector" },
+	{ displayName = "War Stomp" },
+	{ displayName = "Will of the Forsaken" },
+	{ displayName = "Rough Dynamite" },
+	{ displayName = "Rough Copper Bomb" },
+	{ displayName = "Coarse Dynamite" },
+	{ displayName = "Ez-Thro Dynamite" },
+	{ displayName = "Large Copper Bomb" },
+	{ displayName = "Small Bronze Bomb" },
+	{ displayName = "Heavy Dynamite" },
+	{ displayName = "Big Bronze Bomb" },
+	{ displayName = "Solid Dynamite" },
+	{ displayName = "Iron Grenade" },
+	{ displayName = "Flash Bomb" },
+	{ displayName = "Goblin Sapper Charge" },
+	{ displayName = "Big Iron Bomb" },
+	{ displayName = "Mithril Frag Bomb" },
+	{ displayName = "Hi-Explosive Bomb" },
+	{ displayName = "Dense Dynamite" },
+	{ displayName = "The Big One" },
+	{ displayName = "Thorium Grenade" },
+	{ displayName = "Dark Iron Bomb" },
+	{ displayName = "Arcane Bomb" },
+	{ displayName = "Parachute Cloak",                  realName = "Slow Fall" },
+	{ displayName = "Greater Fire Protection Potion",   realName = "Fire Protection" },
+	{ displayName = "Greater Shadow Protection Potion", realName = "Shadow Protection" },
+	{ displayName = "Greater Frost Protection Potion",  realName = "Frost Protection" },
+	{ displayName = "Greater Arcane Protection Potion", realName = "Arcane Protection" },
+	{ displayName = "Greater Nature Protection Potion", realName = "Nature Protection " },
+	{ displayName = "Greater Holy Protection Potion",   realName = "Holy Protection" },
+	{ displayName = "Limited Invulnerability Potion",   realName = "Invulnerability" },
+	{ displayName = "Free Action Potion",               realName = "Free Action" },
+	{ displayName = "Living Action Potion",             realName = "Living Free Action" },
+	{ displayName = "Tidal Charm" },
+	{ displayName = "Skull of Impending Doom",          realName = "Flee" },
+	{ displayName = "Swiftness Potion",                 realName = "Speed" },
+	-- { displayName = "Nifty Stopwatch", realName = "Speed" },
+	{ displayName = "Bandage",                          realName = "First Aid" },
+	{ displayName = "Furbolg Medicine Pouch" },
+	{ displayName = "Magic Dust",                       realName = "Sleep" },
+	{ displayName = "Restorative Potion",               realName = "Restoration" },
+	{ displayName = "Catseye Elixir",                   realName = "Stealth Detection" },
+	{ displayName = "Spider Belt",                      realName = "Immune Root" },
+	{ displayName = "Arena Grand Master",               realName = "Aura of Protection" },
+	{ displayName = "Scaleshield of Emerald Flight",    realName = "Emerald Transformation" },
+	{ displayName = "Dark Iron Hooked Net",             realName = "Trap" },
+	-- { displayName = "Large Rope Net", realName = "Trap" },
+	-- { displayName = "Shard of Nightmare", realName = "Sleep" },
+}
+
 
 -- ==============================
 -- Utility
@@ -570,6 +699,35 @@ local function generateSpellOptions(spellName)
 	return options
 end
 
+local function generateRacialsAndItemsMenu()
+	local menu = {
+		type = "group",
+		name = "Racials & Items",
+		desc = "Settings for racials and engineering items.",
+		order = 10,
+		args = {},
+	}
+
+	table.sort(racialsAndItems, function(a, b)
+		return a.displayName < b.displayName
+	end)
+
+	for i, itemOrRacial in ipairs(racialsAndItems) do
+		local realName = itemOrRacial.realName or itemOrRacial.displayName
+		local sanitizedKey = sanitizeKey(realName)
+		menu.args[sanitizedKey] = {
+			type = "group",
+			name = itemOrRacial.displayName,
+			desc = "Settings for " .. itemOrRacial.displayName,
+			order = i,
+			args = generateSpellOptions(realName),
+		}
+	end
+
+	return menu
+end
+
+
 local function generateClassSpellMenu()
 	local menu = {}
 	for class, spells in pairs(classSpells) do
@@ -594,6 +752,9 @@ local function generateClassSpellMenu()
 			}
 		end
 	end
+
+	menu["Racials_Items"] = generateRacialsAndItemsMenu()
+
 	return menu
 end
 
@@ -619,7 +780,7 @@ ModernSpellAlertSettings.cmdtable = {
 			set = function(value)
 				ModernSpellAlertSettings.db.profile.playSoundForSpell = value
 				DEFAULT_CHAT_FRAME:AddMessage("Play Sound for Spells is now " ..
-				(value and "enabled" or "disabled") .. ".")
+					(value and "enabled" or "disabled") .. ".")
 			end,
 			order = 21,
 		}
