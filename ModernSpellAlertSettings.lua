@@ -621,6 +621,7 @@ local racialsAndItems = {
 	{ displayName = "Arena Grand Master",               realName = "Aura of Protection" },
 	{ displayName = "Scaleshield of Emerald Flight",    realName = "Emerald Transformation" },
 	{ displayName = "Dark Iron Hooked Net",             realName = "Trap" },
+	{ displayName = "Insignia" },
 	-- { displayName = "Large Rope Net", realName = "Trap" },
 	-- { displayName = "Shard of Nightmare", realName = "Sleep" },
 }
