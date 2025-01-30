@@ -12,7 +12,7 @@ A powerful, lightweight, and highly customizable addon for tracking spell casts 
 - ✔️ Alerts about incoming spells at **cast start** for quick reactions.
 - ✔️ Add your own spells and procs easily.
 - ✔️ Quickly target the CASTER and the TARGET of lastly triggered alert.
-- ✔️ Play sound effects for spells included in [Rank14losSA](https://github.com/Fiskehatt/Rank14losSA).
+- ✔️ Play sound effects for all spells.
 - ✔️ Fully customizable tracking options and visuals.
 
 ---
