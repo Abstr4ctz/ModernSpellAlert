@@ -34,105 +34,6 @@ local totemDurations = {
 }
 
 -- ==============================
--- Sound Alerts Paths
--- ==============================
-local ModernSpellAlertSounds = {
-    ["Adrenaline Rush"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\AdrenalineRush.ogg",
-    ["Arcane Power"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\ArcanePower.ogg",
-    ["Banish"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Banish.ogg",
-    ["Barskin"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Barkskin.ogg",
-    ["Battle Stance"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\BattleStance.ogg",
-    ["Berserk"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Berserk.ogg",
-    ["Berserker Rage"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\BerserkerRage.ogg",
-    ["Berserker Stance"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\BerserkerStance.ogg",
-    ["Bestial Wrath"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\BestialWrath.ogg",
-    ["Blade Flurry"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\BladeFlurry.ogg",
-    ["Blessing of Freedom"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\BlessingofFreedom.ogg",
-    ["Blessing of Protection"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\BlessingofProtectiondown.ogg",
-    ["Blessing of Sacrifice"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Sacrifice.ogg",
-    ["Blind"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Blind.ogg",
-    ["Cannibalize"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Cannibalize.ogg",
-    ["Cold Blood"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\ColdBlood.ogg",
-    ["Cold Snap"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\ColdSnap.ogg",
-    ["Combustion"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Combustion.ogg",
-    ["Concussion Blow"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\ConcussionBlow.ogg",
-    ["Counterspell"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Counterspell-Silenced.ogg",
-    ["Dash"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Dash.ogg",
-    ["Death Coil"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\DeathCoil.ogg",
-    ["Death Wish"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\DeathWish.ogg",
-    ["Defense Stance"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\DefenseStance.ogg",
-    ["Deterrence"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Deterrence.ogg",
-    ["Disarm"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Disarm.ogg",
-    ["Divine Favor"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\DivineFavor.ogg",
-    ["Divine Shield"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\DivineShield.ogg",
-    ["Drink"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Drink.ogg",
-    ["Earthbind Totem"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\EarthbindTotem.ogg",
-    ["Elemental Mastery"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\ElementalMastery.ogg",
-    ["Enrage"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Enrage.ogg",
-    ["Entangling Roots"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\EntanglingRoots.ogg",
-    ["Escape Artist"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\EscapeArtist.ogg",
-    ["Evasion"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Evasion.ogg",
-    ["Evocation"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Evocation.ogg",
-    ["Fear"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Fear.ogg",
-    ["Fear Ward"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\FearWard.ogg",
-    ["First Aid"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\FirstAid.ogg",
-    ["Freezing Trap"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\FreezingTrap.ogg",
-    ["Frenzied Regeneration"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\FrenziedRegeneration.ogg",
-    ["Grounding Totem"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\GroundingTotem.ogg",
-    ["Hammer of Justice"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\HammerofJustice.ogg",
-    ["Hand of Freedom"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\BlessingofFreedom.ogg",
-    ["Hand of Protection"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\BlessingofProtectiondown.ogg",
-    ["Hand of Sacrifice"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Sacrifice.ogg",
-    ["Hearthstone"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Hearthstone.ogg",
-    ["Hibernate"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Hibernate.ogg",
-    ["Howl of Terror"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\HowlofTerror.ogg",
-    ["Ice Block"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\IceBlock.ogg",
-    ["Inner Focus"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\InnerFocus.ogg",
-    ["Innervate"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Innervate.ogg",
-    ["Intimidating Shout"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\IntimidatingShout.ogg",
-    ["Intimidation"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Intimidation.ogg",
-    ["Kick"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Kick.ogg",
-    ["Last Stand"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\LastStand.ogg",
-    ["Mana Burn"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\ManaBurn.ogg",
-    ["Mana Tide Totem"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\ManaTideTotem.ogg",
-    ["Mind Control"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\MindControl.ogg",
-    ["Nature's Grasp"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Nature'sGrasp.ogg",
-    ["Nature's Swiftness"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Nature'sSwiftness.ogg",
-    ["Polymorph"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Polymorph.ogg",
-    ["Power Infusion"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\PowerInfusion.ogg",
-    ["Preparation"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Preparation.ogg",
-    ["Presence of Mind"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\PresenceofMind.ogg",
-    ["Psychic Scream"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\PsychicScream.ogg",
-    ["Pummel"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Pummel.ogg",
-    ["Rapid Fire"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\RapidFire.ogg",
-    ["Recklessness"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Recklessness.ogg",
-    ["Reflector"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Reflector.ogg",
-    ["Repentance"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Repentance.ogg",
-    ["Ressurection"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Resurrection.ogg",
-    ["Retaliation"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Retaliation.ogg",
-    ["Revive Pet"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\RevivePet.ogg",
-    ["Scare Beast"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\ScareBeast.ogg",
-    ["Scatter Shot"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\ScatterShot.ogg",
-    ["Seduction"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Seduction.ogg",
-    ["Shield Wall"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\ShieldWall.ogg",
-    ["Silence"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Silence.ogg",
-    ["Spell Lock"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\SpellLock.ogg",
-    ["Sprint"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Sprint.ogg",
-    ["Stoneform"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Stoneform.ogg",
-    ["Summon Felhunter"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\summondemon.ogg",
-    ["Summon Succubus"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\summondemon.ogg",
-    ["Summon Voidwalker"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\summondemon.ogg",
-    ["Summon Imp"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\summondemon.ogg",
-    ["Sweeping Strikes"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\SweepingStrikes.ogg",
-    ["Tranquility"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Tranquility.ogg",
-    ["Tremor Totem"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\TremorTotem.ogg",
-    ["Trinket"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Trinket.ogg",
-    ["Vanish"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\Vanish.ogg",
-    ["War Stomp"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\WarStomp.ogg",
-    ["Will of the Forsaken"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\WilloftheForsaken.ogg",
-    ["Wyvern Sting"] = "Interface\\AddOns\\ModernSpellAlert\\sounds\\WyvernSting.ogg",
-}
--- ==============================
 -- Font Paths
 -- ==============================
 local availableFonts = {
@@ -422,16 +323,6 @@ function ModernSpellAlert:PopulateSpellNames()
 end
 
 -- ==============================
--- Play Sounds
--- ==============================
-function ModernSpellAlert:PlaySoundForSpell(spellName)
-    local soundFilePath = ModernSpellAlertSounds[spellName]
-    if ModernSpellAlertSettings.db.profile.playSoundForSpell and soundFilePath then
-        PlaySoundFile(soundFilePath)
-    end
-end
-
--- ==============================
 -- Targeting
 -- ==============================
 function MSACaster()
@@ -481,8 +372,13 @@ function ModernSpellAlert:ShowAlert(casterName, targetName, showTarget, icon, sp
     isFading = false
     self:StartFadeOut()
 
+    -- Play Sounds
     if spellName then
-        self:PlaySoundForSpell(spellName)
+        local sanitizedSpellName = string.gsub(spellName, "[:/]", "-")
+        local soundFilePath = string.format("Interface\\AddOns\\ModernSpellAlert\\sounds\\%s.ogg", sanitizedSpellName)
+        if soundFilePath then
+            PlaySoundFile(soundFilePath)
+        end
     end
 end
 
