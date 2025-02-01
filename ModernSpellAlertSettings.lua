@@ -992,6 +992,7 @@ ModernSpellAlertSettings.cmdtable = {
 -- ==============================
 ModernSpellAlertOptions = AceLibrary("AceAddon-2.0"):new("AceDB-2.0", "FuBarPlugin-2.0")
 ModernSpellAlertOptions.name = "FuBar - ModernSpellAlert"
+ModernSpellAlertOptions:RegisterDB("ModernSpellAlertSettingsDB")
 ModernSpellAlertOptions.hasIcon = "Interface\\Icons\\Spell_Fire_Flare"
 ModernSpellAlertOptions.defaultMinimapPosition = 200
 ModernSpellAlertOptions.independentProfile = true
