@@ -468,8 +468,6 @@ function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spe
         spellName = self:TrimSpellName(spellName)
         local casterName = UnitName(casterGUID) or "Unknown"
         local targetName = targetGUID and UnitName(targetGUID) or "None"
-		
-		DEFAULT_CHAT_FRAME:AddMessage(spellName)
 
         -- We're skipping the Magma Totem spam.
         if string_find(casterName, "^Magma Totem%s*%s*([IVXLCDM]*)$") then
