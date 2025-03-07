@@ -18,6 +18,12 @@ BINDING_HEADER_MODERNSPELLALERT = "Modern Spell Alert"
 -- ==============================
 local playerGUID, fadeStartTime, lastCasterName, lastTargetName, isFading, lastCleanupTime = nil, nil, nil, nil, false, 0
 local spellNames, activeCasts, recentAoECasts, recentTraps, recentTotems  = {}, {}, {}, {}, {}
+local soundCache = {}
+local tablePool = {}
+local iconCache = {}
+local GetTime, UnitName, UnitExists, UnitIsUnit, UnitIsFriend, UnitCanAttack = 
+    GetTime, UnitName, UnitExists, UnitIsUnit, UnitIsFriend, UnitCanAttack
+local string_find, string_gsub = string.find, string.gsub
 local specialAoESpells = {
     ["Swipe"] = true,
     ["Multi-Shot"] = true,
@@ -178,23 +184,27 @@ end
 
 function ModernSpellAlert:RefreshMessageFrame()
     if not self.frame then return end
-
-    self.frame.casterText:Hide()
-    self.frame.casterText = nil
-    self.frame.targetText:Hide()
-    self.frame.targetText = nil
-
+    
     local selectedFont = self:GetSelectedFont()
-
-    self.frame.casterText = self.frame:CreateFontString(nil, "OVERLAY")
-    self.frame.casterText:SetPoint("RIGHT", self.frame.arrowIcon, "LEFT", -7, 0)
-    self.frame.casterText:SetJustifyH("RIGHT")
-    self.frame.casterText:SetFont(selectedFont, 32, "THINOUTLINE")
-
-    self.frame.targetText = self.frame:CreateFontString(nil, "OVERLAY")
-    self.frame.targetText:SetPoint("LEFT", self.frame.arrowIcon, "RIGHT", 7, 0)
-    self.frame.targetText:SetJustifyH("LEFT")
-    self.frame.targetText:SetFont(selectedFont, 32, "THINOUTLINE")
+    
+    -- Reuse existing text elements instead of creating new ones
+    if self.frame.casterText then
+        self.frame.casterText:SetFont(selectedFont, 32, "THINOUTLINE")
+    else
+        self.frame.casterText = self.frame:CreateFontString(nil, "OVERLAY")
+        self.frame.casterText:SetPoint("RIGHT", self.frame.arrowIcon, "LEFT", -7, 0)
+        self.frame.casterText:SetJustifyH("RIGHT")
+        self.frame.casterText:SetFont(selectedFont, 32, "THINOUTLINE")
+    end
+    
+    if self.frame.targetText then
+        self.frame.targetText:SetFont(selectedFont, 32, "THINOUTLINE")
+    else
+        self.frame.targetText = self.frame:CreateFontString(nil, "OVERLAY")
+        self.frame.targetText:SetPoint("LEFT", self.frame.arrowIcon, "RIGHT", 7, 0)
+        self.frame.targetText:SetJustifyH("LEFT")
+        self.frame.targetText:SetFont(selectedFont, 32, "THINOUTLINE")
+    end
 end
 
 function ModernSpellAlert:ShowTestFrame()
@@ -268,6 +278,25 @@ end
 -- ==============================
 -- Utility
 -- ==============================
+function ModernSpellAlert:GetTable()
+    local tbl = table.remove(tablePool) or {}
+    return tbl
+end
+
+function ModernSpellAlert:ReleaseTable(tbl)
+    if tbl then
+        for k in pairs(tbl) do tbl[k] = nil end
+        table.insert(tablePool, tbl)
+    end
+end
+
+function ModernSpellAlert:GetSpellIcon(spellName, defaultIcon)
+    if not iconCache[spellName] then
+        iconCache[spellName] = customIcons[spellName] or defaultIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
+    end
+    return iconCache[spellName]
+end
+
 function ModernSpellAlert:FetchPlayerGUID()
     _, playerGUID = UnitExists("player")
 end
@@ -275,9 +304,15 @@ end
 function ModernSpellAlert:CleanupTrackingTables()
     local currentTime = GetTime()
 
+    -- Local references for performance
+    local ReleaseTable = self.ReleaseTable
+    local self_ReleaseTable = function(t) ReleaseTable(self, t) end
+
+    -- Define cleanup in one place
     local function cleanTable(table, maxAge)
         for key, data in pairs(table) do
             if currentTime - data.timestamp > maxAge then
+                self_ReleaseTable(table[key])
                 table[key] = nil
             end
         end
@@ -289,6 +324,7 @@ function ModernSpellAlert:CleanupTrackingTables()
 
     for key, data in pairs(recentTotems) do
         if currentTime - data.timestamp > (data.duration or 0) then
+            self_ReleaseTable(recentTotems[key])
             recentTotems[key] = nil
         end
     end
@@ -297,7 +333,7 @@ end
 
 function ModernSpellAlert:TrimSpellName(spellName)
     if not spellName then return nil end
-    return string.gsub(spellName, "^%s*(.-)%s*$", "%1")
+    return string_gsub(spellName, "^%s*(.-)%s*$", "%1")
 end
 
 -- ==============================
@@ -317,6 +353,9 @@ function ModernSpellAlert:PopulateSpellNames()
             end
             if next(profileKeys) then
                 spellNames[spellName] = { profileKeys = profileKeys }
+                local sanitizedSpellName = string_gsub(spellName, "[:/]", "-")
+                local soundFilePath = string.format("Interface\\AddOns\\ModernSpellAlert\\sounds\\%s.ogg", sanitizedSpellName)
+                soundCache[spellName] = soundFilePath
             end
         end
     end
@@ -344,15 +383,21 @@ function ModernSpellAlert:ShowAlert(casterName, targetName, showTarget, icon, sp
     lastCasterName = (casterName and casterName ~= "" and casterName) or targetName
     lastTargetName = (targetName and targetName ~= "" and targetName) or casterName
 
+    -- Check and disable test mode if needed
     if self.frame and self.frame:IsVisible() and ModernSpellAlert.frame and ModernSpellAlert.frame:IsVisible() then
         if ModernSpellAlertSettings.cmdtable.args.frameSettings.args.testMode.get() then
             ModernSpellAlertSettings.cmdtable.args.frameSettings.args.testMode.set(false)
         end
     end
 
+    -- Batch UI updates
+    self.frame:Hide() -- Temporarily hide to avoid multiple redraws
+    
+    -- Setup text and icons
     self.frame.casterText:SetText(casterName)
-    self.frame.spellIcon:SetTexture(customIcons[spellName] or icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+    self.frame.spellIcon:SetTexture(self:GetSpellIcon(spellName, icon))
 
+    -- Configure for target display or not
     if showTarget then
         self.frame.targetText:SetText(targetName)
         self.frame.targetText:Show()
@@ -367,18 +412,17 @@ function ModernSpellAlert:ShowAlert(casterName, targetName, showTarget, icon, sp
         self.frame.spellIcon:SetPoint("RIGHT", self.frame.casterText, "LEFT", -10, 0)
     end
 
+    -- Show the frame after all changes
     self.frame:SetAlpha(1)
     self.frame:Show()
+    
+    -- Handle fade out
     isFading = false
     self:StartFadeOut()
 
-    -- Play Sounds
-    if spellName then
-        local sanitizedSpellName = string.gsub(spellName, "[:/]", "-")
-        local soundFilePath = string.format("Interface\\AddOns\\ModernSpellAlert\\sounds\\%s.ogg", sanitizedSpellName)
-        if soundFilePath then
-            PlaySoundFile(soundFilePath)
-        end
+    -- Play sound (optimized earlier)
+    if spellName and soundCache[spellName] then
+        PlaySoundFile(soundCache[spellName])
     end
 end
 
@@ -390,7 +434,7 @@ function ModernSpellAlert:HandleAlert(profileKeys, casterGUID, targetGUID, caste
             self:ShowAlert(casterName, "", false, icon, spellName)
         elseif profileKeys["EnabledByFriendly"] and not UnitIsUnit("player", casterGUID) and UnitIsFriend("player", casterGUID) then
             self:ShowAlert(casterName, "", false, icon, spellName)
-        elseif profileKeys["EnabledByHostile"] and UnitCanAttack("player", casterGUID) then
+        elseif profileKeys["EnabledByHostile"] and not UnitIsFriend("player", casterGUID) then
             self:ShowAlert(casterName, "", false, icon, spellName)
         end
     else
@@ -406,9 +450,9 @@ function ModernSpellAlert:HandleAlert(profileKeys, casterGUID, targetGUID, caste
             self:ShowAlert(casterName, targetName, true, icon, spellName)
         elseif profileKeys["EnabledByFriendly"] and not UnitIsUnit("player", targetGUID) and UnitIsFriend("player", casterGUID) then
             self:ShowAlert(casterName, targetName, true, icon, spellName)
-        elseif profileKeys["EnabledOnHostile"] and UnitCanAttack("player", targetGUID) then
+        elseif profileKeys["EnabledOnHostile"] and not UnitIsFriend("player", targetGUID) then
             self:ShowAlert(casterName, targetName, true, icon, spellName)
-        elseif profileKeys["EnabledByHostile"] and UnitCanAttack("player", casterGUID) then
+        elseif profileKeys["EnabledByHostile"] and not UnitIsFriend("player", casterGUID) then
             self:ShowAlert(casterName, targetName, true, icon, spellName)
         end
     end
@@ -418,43 +462,39 @@ end
 -- Event Handlers
 -- ==============================
 function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spellID, castDuration)
+    -- Early return for irrelevant cases
     if event == "UNIT_CASTEVENT" then
         local spellName, _, icon = SpellInfo(spellID)
         spellName = self:TrimSpellName(spellName)
         local casterName = UnitName(casterGUID) or "Unknown"
         local targetName = targetGUID and UnitName(targetGUID) or "None"
-
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Caster GUID: " .. tostring(casterName))
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Target GUID: " .. tostring(targetName))
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Event Type: " .. tostring(eventType))
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Spell ID: " .. tostring(spellID))
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Spell Name:" .. tostring(spellName) .. ".")
-        -- if eventType == "CAST" then
-        -- DEFAULT_CHAT_FRAME:AddMessage("  Cast Duration: " .. tostring(castDuration))
-        -- end
+		
+		DEFAULT_CHAT_FRAME:AddMessage(spellName)
 
         -- We're skipping the Magma Totem spam.
-        if string.find(casterName, "^Magma Totem%s*%s*([IVXLCDM]*)$") then
+        if string_find(casterName, "^Magma Totem%s*%s*([IVXLCDM]*)$") then
             return
         end
 
-        if eventType == "CAST" and string.find(spellName, "Trap") then
-            recentTraps[spellName] = {
-                casterName = casterName,
-                icon = icon,
-                timestamp = GetTime(),
-            }
+        -- Process trap/totem events first
+        if eventType == "CAST" then
+            if string_find(spellName, "Trap") then
+                recentTraps[spellName] = {
+                    casterName = casterName,
+                    icon = icon,
+                    timestamp = GetTime(),
+                }
+            elseif totemDurations[spellName] then
+                recentTotems[spellName] = {
+                    casterName = casterName,
+                    icon = icon,
+                    timestamp = GetTime(),
+                    duration = totemDurations[spellName],
+                }
+            end
         end
 
-        if eventType == "CAST" and totemDurations[spellName] then
-            recentTotems[spellName] = {
-                casterName = casterName,
-                icon = icon,
-                timestamp = GetTime(),
-                duration = totemDurations[spellName],
-            }
-        end
-
+        -- Process spell events
         if spellNames[spellName] then
             local spellData = spellNames[spellName]
             if spellData and spellData.profileKeys then
@@ -477,6 +517,7 @@ function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spe
                 end
             end
         end
+		
     elseif event == "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE" or
         event == "CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE" or
         event == "CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE" or
@@ -492,8 +533,8 @@ function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spe
         event == "CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS" or
         event == "CHAT_MSG_COMBAT_HOSTILEPLAYER_HITS" or
         event == "CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE" then
-        local relevant = string.find(arg1, "Trap") or string.find(arg1, "Sap") or string.find(arg1, "Distract") or
-        string.find(arg1, "Totem") or string.find(arg1, "You") or string.find(arg1, "you")
+        local relevant = string_find(arg1, "Trap") or string_find(arg1, "Sap") or string_find(arg1, "Distract") or
+        string_find(arg1, "Totem") or string_find(arg1, "You") or string_find(arg1, "you")
 
         if not relevant then
             return
@@ -503,7 +544,7 @@ function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spe
         for trapName, trapData in pairs(recentTraps) do
             local spellData = spellNames[trapName]
             if spellData and spellData.profileKeys and spellData.profileKeys["EnabledOnPlayer"] then
-                if (GetTime() - trapData.timestamp) <= 60 and string.find(arg1, trapName) and (string.find(arg1, "%f[%a]You[%A,.!?]*%f[%A]") or string.find(arg1, "%f[%a]you[%A,.!?]*%f[%A]")) then
+                if (GetTime() - trapData.timestamp) <= 60 and string_find(arg1, trapName) and (string_find(arg1, "%f[%a]You[%A,.!?]*%f[%A]") or string_find(arg1, "%f[%a]you[%A,.!?]*%f[%A]")) then
                     self:ShowAlert(trapData.casterName, UnitName("player"), true, trapData.icon, trapName)
                     recentTraps[trapName] = nil
                     break
@@ -515,7 +556,7 @@ function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spe
         for totemName, totemData in pairs(recentTotems) do
             local spellData = spellNames[totemName]
             if spellData and spellData.profileKeys and spellData.profileKeys["EnabledOnPlayer"] then
-                if string.find(arg1, "You are afflicted by Earthbind") then
+                if string_find(arg1, "You are afflicted by Earthbind") then
                     local earthbindCasters = {}
                     for name, data in pairs(recentTotems) do
                         if name == "Earthbind Totem" and (GetTime() - data.timestamp) <= data.duration then
@@ -541,7 +582,7 @@ function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spe
                         pattern = "^" .. totemName .. "%s*[IVXLCDM]* %((%S+)%)'s"
                     end
 
-                    local startPos, endPos, combatLogCasterName = string.find(arg1, pattern)
+                    local startPos, endPos, combatLogCasterName = string_find(arg1, pattern)
                     if combatLogCasterName then
                         if combatLogCasterName == totemData.casterName then
                             self:ShowAlert(combatLogCasterName, UnitName("player"), true,
@@ -558,7 +599,7 @@ function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spe
         local distractSpellData = spellNames["Distract"]
         if distractSpellData and distractSpellData.profileKeys and distractSpellData.profileKeys["EnabledOnPlayer"] then
             if arg1 then
-                local startPos, endPos, combatLogCasterName = string.find(arg1, "(.+)%s+performs Distract on you.")
+                local startPos, endPos, combatLogCasterName = string_find(arg1, "(.+)%s+performs Distract on you.")
                 if combatLogCasterName then
                     local playerName = UnitName("player") or "Unknown"
                     self:ShowAlert(combatLogCasterName, playerName, true, "Interface\\Icons\\Ability_Rogue_Distract",
@@ -570,11 +611,11 @@ function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spe
         -- Sap is special case.
         local sapSpellData = spellNames["Sap"]
         if sapSpellData and sapSpellData.profileKeys then
-            if arg1 and string.find(arg1, "You are afflicted by Sap.") and sapSpellData.profileKeys["EnabledOnPlayer"] then
+            if arg1 and string_find(arg1, "You are afflicted by Sap.") and sapSpellData.profileKeys["EnabledOnPlayer"] then
                 local playerName = UnitName("player") or "Unknown"
                 self:ShowAlert(playerName, "", false, "Interface\\Icons\\Ability_Sap", "Sap")
                 -- elseif arg1 then
-                -- local startPos, endPos, combatLogCasterName = string.find(arg1, "(.+)%s+is afflicted by Sap.")
+                -- local startPos, endPos, combatLogCasterName = string_find(arg1, "(.+)%s+is afflicted by Sap.")
                 -- if combatLogCasterName then
                 -- if sapSpellData.profileKeys["EnabledOnTarget"] or
                 -- sapSpellData.profileKeys["EnabledOnFriendly"] or
@@ -592,14 +633,14 @@ function ModernSpellAlert:OnUnitCastEvent(casterGUID, targetGUID, eventType, spe
         if spellData and spellData.profileKeys then
             local casterName = UnitName(data.casterGUID) or "Unknown"
 
-            if (GetTime() - data.timestamp) <= 1 and string.find(arg1, spellName) then
-                if spellData.profileKeys["EnabledOnPlayer"] and (string.find(arg1, "%f[%a]You[%A,.!?]*%f[%A]") or string.find(arg1, "%f[%a]you[%A,.!?]*%f[%A]")) then
+            if (GetTime() - data.timestamp) <= 1 and string_find(arg1, spellName) then
+                if spellData.profileKeys["EnabledOnPlayer"] and (string_find(arg1, "%f[%a]You[%A,.!?]*%f[%A]") or string_find(arg1, "%f[%a]you[%A,.!?]*%f[%A]")) then
                     local playerName = UnitName("player") or "Player"
                     self:ShowAlert(casterName, playerName, true, data.icon, spellName)
                     recentAoECasts[spellName] = nil
                     break
                     -- else
-                    -- local startPos, endPos, targetName = string.find(arg1, "^(%S+)")
+                    -- local startPos, endPos, targetName = string_find(arg1, "^(%S+)")
                     -- if targetName then
                     -- local _, targetGUID = UnitExists(targetName)
                     -- if targetGUID then
@@ -625,10 +666,21 @@ end
 -- ==============================
 function ModernSpellAlert:OnUpdate()
     if not isFading then return end
+    
     local currentTime = GetTime()
     local fadeTime = ModernSpellAlertSettings.db.profile.fadeTime or 3
-    local progress = (currentTime - fadeStartTime) / fadeTime
-
+    local elapsed = currentTime - fadeStartTime
+    
+    -- Only clean up tables occasionally, not on every update
+    if currentTime - lastCleanupTime >= 10 then
+        self:CleanupTrackingTables()
+        lastCleanupTime = currentTime
+    end
+    
+    -- Early return if not actively fading
+    if elapsed < 0 then return end
+    
+    local progress = elapsed / fadeTime
     if progress >= 1 then
         self.frame:SetAlpha(0)
         self.frame:Hide()
@@ -636,11 +688,6 @@ function ModernSpellAlert:OnUpdate()
         self.frame:SetScript("OnUpdate", nil)
     else
         self.frame:SetAlpha(1 - progress)
-    end
-
-    if currentTime - lastCleanupTime >= 10 then
-        self:CleanupTrackingTables()
-        lastCleanupTime = currentTime
     end
 end
 
@@ -661,6 +708,15 @@ function ModernSpellAlert:OnPlayerLogin()
         self:FetchPlayerGUID()
     end
     self:PopulateSpellNames()
+    self:CacheSounds()
+end
+
+function ModernSpellAlert:CacheSounds()
+    for spellName, _ in pairs(spellNames) do
+        local sanitizedSpellName = string_gsub(spellName, "[:/]", "-")
+        local soundFilePath = string.format("Interface\\AddOns\\ModernSpellAlert\\sounds\\%s.ogg", sanitizedSpellName)
+        soundCache[spellName] = soundFilePath
+    end
 end
 
 function ModernSpellAlert:OnInitialize()
