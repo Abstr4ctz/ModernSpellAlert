@@ -120,7 +120,8 @@ local function LoadClassSpellData()
 		{ displayName = "Insignia Paladin/Priest",          realName = "Immune Fear/Polymorph/Stun" },
 		{ displayName = "Insignia Rogue/Warlock",           realName = "Immune Charm/Fear/Polymorph" },
 		{ displayName = "Insignia Hunter/Shaman/Warrior",   realName = "Immune Root/Snare/Stun" },
-		{ displayName = "Holy Strength" }
+		{ displayName = "Holy Strength" },
+		{ displayName = "Sheen of Zanza" }
 		-- { displayName = "Large Rope Net", realName = "Trap" },
 		-- { displayName = "Shard of Nightmare", realName = "Sleep" },
 	}
